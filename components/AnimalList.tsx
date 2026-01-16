@@ -1,20 +1,28 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Search, Trophy, Users, ArrowDownAZ, X
 } from 'lucide-react';
-import { ANIMALS } from '../data';
+import { Animal } from '../types';
 import { getAnimalEmoji } from '../animalEmoji';
 import { parsePopulation } from '../utils';
 import { AnimalTypeLabel, AnimalPopulationLabel, AnimalTrendLabel } from './AnimalLabels';
 import YogicScore from './YogicScore';
 
-const AnimalList: React.FC = () => {
+interface AnimalListProps {
+  animals: Animal[];
+}
+
+const AnimalList: React.FC<AnimalListProps> = ({ animals }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMode, setSortMode] = useState<'score' | 'population' | 'name'>('score');
 
+  useEffect(() => {
+    document.title = "All Species | YogicAnimals";
+  }, []);
+
   const processedList = useMemo(() => {
-    let data = [...ANIMALS];
+    let data = [...animals];
 
     // Filter
     if (searchTerm.trim()) {
@@ -38,7 +46,7 @@ const AnimalList: React.FC = () => {
     });
 
     return data;
-  }, [searchTerm, sortMode]);
+  }, [searchTerm, sortMode, animals]);
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
@@ -47,7 +55,7 @@ const AnimalList: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-2">
             <div>
               <h1 className="text-4xl md:text-6xl font-bold text-slate-900 font-playfair mb-4">Animals</h1>
-              <p className="text-slate-500">Explore the yogic quantification of {ANIMALS.length} different species.</p>
+              <p className="text-slate-500">Explore the yogic quantification of {animals.length} different species.</p>
             </div>
           </div>
         </div>

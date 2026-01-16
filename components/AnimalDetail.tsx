@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ANIMALS } from '../data';
 import { Animal } from '../types';
 import AnimalHeader from './AnimalHeader';
 import AnimalAttributes from './AnimalAttributes';
@@ -8,18 +7,30 @@ import AnimalRadarChart from './AnimalRadarChart';
 import AnimalLinks from './AnimalLinks';
 import SimilarAnimals from './SimilarAnimals';
 
-const AnimalDetail: React.FC = () => {
+interface AnimalDetailProps {
+  animals: Animal[];
+}
+
+const AnimalDetail: React.FC<AnimalDetailProps> = ({ animals }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
   const animal = useMemo(() => 
-    ANIMALS.find(a => a.id === slug), 
-  [slug]);
+    animals.find(a => a.id === slug), 
+  [slug, animals]);
+
+  useEffect(() => {
+    if (animal) {
+      document.title = `${animal.name} | YogicAnimals`;
+    } else {
+      document.title = "Species Not Found | YogicAnimals";
+    }
+  }, [animal]);
 
   const similarSpecies = useMemo(() => {
     if (!animal) return [];
     // Find animals with closest total score within the same type, or just generally close
-    return ANIMALS
+    return animals
       .filter(a => a.id !== animal.id)
       .map(a => ({
         ...a,
@@ -32,7 +43,7 @@ const AnimalDetail: React.FC = () => {
         return a.scoreDiff - b.scoreDiff;
       })
       .slice(0, 3); // Limit to 3
-  }, [animal]);
+  }, [animal, animals]);
 
   if (!animal) {
     return (

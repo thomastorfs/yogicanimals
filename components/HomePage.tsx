@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Hero } from './Hero';
 import { StatsGrid } from './StatsGrid';
 import { TopBottomLists } from './TopBottomLists';
 import { Methodology } from './Methodology';
-import { ANIMALS } from '../data';
+import { Animal } from '../types';
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  animals: Animal[];
+}
+
+const HomePage: React.FC<HomePageProps> = ({ animals }) => {
+  
+  useEffect(() => {
+    document.title = "YogicAnimals - Spiritual Quantification of Species";
+  }, []);
+
   return (
     <div className="flex flex-col bg-slate-50 relative min-h-screen">
       
@@ -17,7 +26,7 @@ const HomePage: React.FC = () => {
         <StatsGrid />
       </div>
       
-      <TopBottomLists animals={ANIMALS} />
+      <TopBottomLists animals={animals} />
       <Methodology />
     </div>
   );

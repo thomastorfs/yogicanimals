@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Data
+import { ANIMALS as initialData } from './data';
+import { Animal } from './types';
 
 // Components
 import Navbar from './components/Navbar';
@@ -13,6 +17,14 @@ import AnimalDetail from './components/AnimalDetail';
 import Analytics from './components/Analytics';
 
 const App = () => {
+  // Store animals in state as requested
+  const [animals, setAnimals] = useState<Animal[]>([]);
+
+  useEffect(() => {
+    // Simulate loading data into state
+    setAnimals(initialData);
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />
@@ -20,10 +32,10 @@ const App = () => {
         <Navbar />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/animals" element={<AnimalList />} />
-            <Route path="/species/:slug" element={<AnimalDetail />} />
-            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/" element={<HomePage animals={animals} />} />
+            <Route path="/animals" element={<AnimalList animals={animals} />} />
+            <Route path="/species/:slug" element={<AnimalDetail animals={animals} />} />
+            <Route path="/analytics" element={<Analytics animals={animals} />} />
           </Routes>
         </main>
         <Footer />

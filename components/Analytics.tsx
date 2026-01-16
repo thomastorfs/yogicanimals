@@ -1,9 +1,18 @@
-import React from 'react';
-import { ANIMALS } from '../data';
+import React, { useEffect } from 'react';
 import MetricCorrelations from './MetricCorrelations';
 import { AttributeExplorer } from './AttributeExplorer';
+import { Animal } from '../types';
 
-const Analytics: React.FC = () => {
+interface AnalyticsProps {
+  animals: Animal[];
+}
+
+const Analytics: React.FC<AnalyticsProps> = ({ animals }) => {
+  
+  useEffect(() => {
+    document.title = "Analytics & Insights | YogicAnimals";
+  }, []);
+
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
       <div className="bg-white border-b border-slate-200 shadow-sm">
@@ -16,10 +25,10 @@ const Analytics: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-12">
         
         {/* Scatter Plot Card */}
-        <MetricCorrelations animals={ANIMALS} />
+        <MetricCorrelations animals={animals} />
 
         {/* Attribute Explorer Card */}
-        <AttributeExplorer animals={ANIMALS} />
+        <AttributeExplorer animals={animals} />
 
       </div>
     </div>
