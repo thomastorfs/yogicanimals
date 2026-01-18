@@ -17,10 +17,12 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({ isOpen, setIsOpen, l
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
-  if (!isOpen) return null;
-
   return (
-    <div className="md:hidden bg-white border-t border-emerald-100 shadow-xl">
+    <div 
+      className={`md:hidden bg-white border-emerald-100 shadow-xl overflow-hidden transition-all duration-300 ease-in-out ${
+        isOpen ? 'max-h-[400px] opacity-100 border-t' : 'max-h-0 opacity-0 border-t-0'
+      }`}
+    >
       <div className="px-4 pt-4 pb-6 space-y-2">
         {links.map((link) => (
           <Link

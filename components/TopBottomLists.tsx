@@ -52,7 +52,7 @@ const ListItem: React.FC<ListItemProps> = ({ animal, index, type, totalCount, on
      );
 }
 
-export const TopBottomLists = ({ animals }: TopBottomListsProps) => {
+export const TopBottomLists: React.FC<TopBottomListsProps> = ({ animals }) => {
   const navigate = useNavigate();
   
   const { topAnimals, bottomAnimals } = useMemo(() => {

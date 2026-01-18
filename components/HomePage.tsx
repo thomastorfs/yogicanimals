@@ -4,6 +4,7 @@ import { StatsGrid } from './StatsGrid';
 import { TopBottomLists } from './TopBottomLists';
 import { Methodology } from './Methodology';
 import { Animal } from '../types';
+import HomeIncentive from './HomeIncentive';
 
 interface HomePageProps {
   animals: Animal[];
@@ -12,7 +13,7 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ animals }) => {
   
   useEffect(() => {
-    document.title = "YogicAnimals - Spiritual Quantification of Species";
+    document.title = "YogicAnimals | Home | Spiritual Quantification";
   }, []);
 
   return (
@@ -28,6 +29,9 @@ const HomePage: React.FC<HomePageProps> = ({ animals }) => {
       
       <TopBottomLists animals={animals} />
       <Methodology />
+      
+      {/* Incentive moved to bottom */}
+      <HomeIncentive />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { Brain, ShieldAlert, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ATTRIBUTE_LABELS, ATTRIBUTE_DESCRIPTIONS, ATTRIBUTE_WEIGHTS, POSITIVE_ATTRIBUTES, NEGATIVE_ATTRIBUTES } from '../types';
 
-export const Methodology = () => {
+export const Methodology: React.FC = () => {
   const navigate = useNavigate();
   
   const handleAttributeSelect = (attr: string) => {

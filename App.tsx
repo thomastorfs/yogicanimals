@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Data
-import { ANIMALS as initialData } from './data';
+import { RAW_ANIMAL_DATA } from './data';
 import { Animal } from './types';
+import { loadAnimals } from './utils';
 
 // Components
 import Navbar from './components/Navbar';
@@ -15,14 +16,16 @@ import HomePage from './components/HomePage';
 import AnimalList from './components/AnimalList';
 import AnimalDetail from './components/AnimalDetail';
 import Analytics from './components/Analytics';
+import PersonalScoreCalculator from './components/PersonalScoreCalculator';
 
 const App = () => {
   // Store animals in state as requested
   const [animals, setAnimals] = useState<Animal[]>([]);
 
   useEffect(() => {
-    // Simulate loading data into state
-    setAnimals(initialData);
+    // Load and process data into state
+    const processedAnimals = loadAnimals(RAW_ANIMAL_DATA);
+    setAnimals(processedAnimals);
   }, []);
 
   return (
@@ -36,6 +39,7 @@ const App = () => {
             <Route path="/animals" element={<AnimalList animals={animals} />} />
             <Route path="/species/:slug" element={<AnimalDetail animals={animals} />} />
             <Route path="/analytics" element={<Analytics animals={animals} />} />
+            <Route path="/calculate" element={<PersonalScoreCalculator />} />
           </Routes>
         </main>
         <Footer />

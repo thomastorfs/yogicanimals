@@ -1,4 +1,4 @@
-import { Animal, ATTRIBUTE_WEIGHTS } from './types';
+import { Animal, ATTRIBUTE_WEIGHTS, YogicAttributes } from './types';
 
 // Data Format: [Name, Type, Population, Trend, Habitat, EcoRelations, Explanation, WikiLink, [Attributes...]]
 export type RawAnimalRow = [string, string, string, string, string, string, string, string, number[]];
@@ -23,6 +23,36 @@ export const formatPopulation = (popStr: string): string => {
   return num.toLocaleString();
 };
 
+export const calculateYogicScore = (attributes: YogicAttributes) => {
+  // Positive Criteria Calculation (The Yogi Nature)
+  const positive_score = 
+    (attributes.sattva * ATTRIBUTE_WEIGHTS.sattva) +
+    (attributes.vairagya * ATTRIBUTE_WEIGHTS.vairagya) +
+    (attributes.viveka * ATTRIBUTE_WEIGHTS.viveka) +
+    (attributes.santosha * ATTRIBUTE_WEIGHTS.santosha) +
+    (attributes.titiksha * ATTRIBUTE_WEIGHTS.titiksha) +
+    (attributes.dama * ATTRIBUTE_WEIGHTS.dama) +
+    (attributes.ekagrata * ATTRIBUTE_WEIGHTS.ekagrata) +
+    (attributes.seva_bhakti * ATTRIBUTE_WEIGHTS.seva_bhakti) +
+    (attributes.pranayama * ATTRIBUTE_WEIGHTS.pranayama);
+  
+  // Negative Criteria Calculation (The Animal Nature)
+  const negative_score = 
+    (attributes.himsa * ATTRIBUTE_WEIGHTS.himsa) +
+    (attributes.tamas * ATTRIBUTE_WEIGHTS.tamas) +
+    (attributes.steya * ATTRIBUTE_WEIGHTS.steya) +
+    (attributes.lobha * ATTRIBUTE_WEIGHTS.lobha) +
+    (attributes.bahirmukha * ATTRIBUTE_WEIGHTS.bahirmukha) +
+    (attributes.abhinivesha * ATTRIBUTE_WEIGHTS.abhinivesha) +
+    (attributes.chanchalata * ATTRIBUTE_WEIGHTS.chanchalata) +
+    (attributes.alasya * ATTRIBUTE_WEIGHTS.alasya) +
+    (attributes.rajas * ATTRIBUTE_WEIGHTS.rajas);
+
+  const total_score = positive_score - negative_score;
+
+  return { total_score, positive_score, negative_score };
+};
+
 export const loadAnimals = (data: RawAnimalRow[]): Animal[] => {
   const animals = data.map((row) => {
     const [
@@ -37,73 +67,30 @@ export const loadAnimals = (data: RawAnimalRow[]): Animal[] => {
       attrs
     ] = row;
     
-    // Map attributes from raw data order to new semantic keys
-    // Old indices mapping to new concepts:
-    // 0: sattva -> sattva
-    // 1: vairagya -> vairagya
-    // 2: viveka -> viveka
-    // 3: ekagrata -> ekagrata
-    // 4: santosha -> santosha
-    // 5: frustration_tolerance -> titiksha (Endurance)
-    // 6: impulse_control -> dama (Restraint)
-    // 7: ego_confrontation -> pranayama (Breath/Life Force control - loosely mapped for data preservation)
-    // 8: sanga -> seva_bhakti (Symbiosis/Service)
-    
-    // 9: rajas -> rajas
-    // 10: tamas -> tamas
-    // 11: addiction_potential -> lobha (Greed/Hoarding)
-    // 12: time_consumption -> alasya (Lethargy)
-    // 13: dissociation -> abhinivesha (Fear/Anxiety)
-    // 14: samskara_formation -> chanchalata (Monkey Mind)
-    // 15: ahimsa_violation -> himsa (Violence)
-    // 16: pratyahara_disruption -> bahirmukha (Hyper-vigilance)
-    // 17: sankalpa_undermining -> steya (Theft/Parasitism)
+    // Map attributes from raw data order
+    const attributes: YogicAttributes = {
+      sattva: attrs[0],
+      vairagya: attrs[1],
+      viveka: attrs[2],
+      ekagrata: attrs[3],
+      santosha: attrs[4],
+      titiksha: attrs[5],
+      dama: attrs[6],
+      pranayama: attrs[7], 
+      seva_bhakti: attrs[8],
 
-    const sattva = attrs[0];
-    const vairagya = attrs[1];
-    const viveka = attrs[2];
-    const ekagrata = attrs[3];
-    const santosha = attrs[4];
-    const titiksha = attrs[5];
-    const dama = attrs[6];
-    const pranayama = attrs[7]; 
-    const seva_bhakti = attrs[8];
+      rajas: attrs[9],
+      tamas: attrs[10],
+      lobha: attrs[11],
+      alasya: attrs[12],
+      abhinivesha: attrs[13],
+      chanchalata: attrs[14],
+      himsa: attrs[15],
+      bahirmukha: attrs[16],
+      steya: attrs[17],
+    };
 
-    const rajas = attrs[9];
-    const tamas = attrs[10];
-    const lobha = attrs[11];
-    const alasya = attrs[12];
-    const abhinivesha = attrs[13];
-    const chanchalata = attrs[14];
-    const himsa = attrs[15];
-    const bahirmukha = attrs[16];
-    const steya = attrs[17];
-
-    // Positive Criteria Calculation (The Yogi Nature)
-    const positive_score = 
-      (sattva * ATTRIBUTE_WEIGHTS.sattva) +
-      (vairagya * ATTRIBUTE_WEIGHTS.vairagya) +
-      (viveka * ATTRIBUTE_WEIGHTS.viveka) +
-      (santosha * ATTRIBUTE_WEIGHTS.santosha) +
-      (titiksha * ATTRIBUTE_WEIGHTS.titiksha) +
-      (dama * ATTRIBUTE_WEIGHTS.dama) +
-      (ekagrata * ATTRIBUTE_WEIGHTS.ekagrata) +
-      (seva_bhakti * ATTRIBUTE_WEIGHTS.seva_bhakti) +
-      (pranayama * ATTRIBUTE_WEIGHTS.pranayama);
-    
-    // Negative Criteria Calculation (The Animal Nature)
-    const negative_score = 
-      (himsa * ATTRIBUTE_WEIGHTS.himsa) +
-      (tamas * ATTRIBUTE_WEIGHTS.tamas) +
-      (steya * ATTRIBUTE_WEIGHTS.steya) +
-      (lobha * ATTRIBUTE_WEIGHTS.lobha) +
-      (bahirmukha * ATTRIBUTE_WEIGHTS.bahirmukha) +
-      (abhinivesha * ATTRIBUTE_WEIGHTS.abhinivesha) +
-      (chanchalata * ATTRIBUTE_WEIGHTS.chanchalata) +
-      (alasya * ATTRIBUTE_WEIGHTS.alasya) +
-      (rajas * ATTRIBUTE_WEIGHTS.rajas);
-
-    const total_score = positive_score - negative_score;
+    const scores = calculateYogicScore(attributes);
 
     return {
       id: name.toLowerCase().replace(/ /g, '-').replace(/[()]/g, ''),
@@ -115,11 +102,8 @@ export const loadAnimals = (data: RawAnimalRow[]): Animal[] => {
       ecological_relations,
       score_explanation,
       wikipedia_link,
-      sattva, vairagya, viveka, pranayama, santosha, titiksha, dama, ekagrata, seva_bhakti,
-      tamas, rajas, lobha, alasya, abhinivesha, chanchalata, himsa, bahirmukha, steya,
-      total_score,
-      positive_score,
-      negative_score,
+      ...attributes,
+      ...scores,
       rank: 0 // Placeholder
     };
   });

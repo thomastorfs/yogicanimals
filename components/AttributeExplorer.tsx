@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell 
 } from 'recharts';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Animal, YogicAttributes } from '../types';
 import { ATTRIBUTE_LABELS, ATTRIBUTE_DESCRIPTIONS, POSITIVE_ATTRIBUTES, NEGATIVE_ATTRIBUTES } from '../types';
 import { getScoreColor } from './YogicScore';
@@ -12,9 +12,10 @@ interface AttributeExplorerProps {
   animals: Animal[];
 }
 
-export const AttributeExplorer = ({ animals }: AttributeExplorerProps) => {
+export const AttributeExplorer: React.FC<AttributeExplorerProps> = ({ animals }) => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const targetAttribute = searchParams.get('attr') as keyof YogicAttributes | null;
   const [activeAttr, setActiveAttr] = useState<keyof YogicAttributes>(targetAttribute || 'sattva');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ export const AttributeExplorer = ({ animals }: AttributeExplorerProps) => {
 
   const handleAttrClick = (attr: keyof YogicAttributes) => {
     setActiveAttr(attr);
-    setSearchParams({ attr }); // Update URL
+    navigate(`?attr=${attr}`); // Update URL
     
     // Scroll to the chart view to show results
     setTimeout(() => {
