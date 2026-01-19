@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Hero } from './Hero';
 import { StatsGrid } from './StatsGrid';
-import { TopBottomLists } from './TopBottomLists';
-import { Methodology } from './Methodology';
+import LoadingThrobber from './LoadingThrobber';
+import { LazyBoundary } from './LazyBoundary';
 import { Animal } from '../types';
-import HomeIncentive from './HomeIncentive';
+
+// Lazy load heavy components
+const TopBottomLists = React.lazy(() => import('./TopBottomLists').then(m => ({ default: m.TopBottomLists })));
+const Methodology = React.lazy(() => import('./Methodology').then(m => ({ default: m.Methodology })));
+const HomeIncentive = React.lazy(() => import('./HomeIncentive'));
 
 interface HomePageProps {
   animals: Animal[];
@@ -27,11 +31,18 @@ const HomePage: React.FC<HomePageProps> = ({ animals }) => {
         <StatsGrid />
       </div>
       
-      <TopBottomLists animals={animals} />
-      <Methodology />
+      <LazyBoundary message="Loading rankings..." size="md">
+        <TopBottomLists animals={animals} />
+      </LazyBoundary>
+      
+      <LazyBoundary message="Loading methodology..." size="md">
+        <Methodology />
+      </LazyBoundary>
       
       {/* Incentive moved to bottom */}
-      <HomeIncentive />
+      <LazyBoundary message="Loading section..." size="sm">
+        <HomeIncentive />
+      </LazyBoundary>
     </div>
   );
 };

@@ -1,11 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { Animal } from '../types';
 import { parsePopulation } from '../utils';
-import UserScoreBanner from './UserScoreBanner';
-import { AnimalListHeader } from './AnimalListHeader';
-import { AnimalControls } from './AnimalControls';
-import { AnimalListItem } from './AnimalListItem';
-import { AnimalListEmptyState } from './AnimalListEmptyState';
+import { LazyBoundary } from './LazyBoundary';
+import LoadingThrobber from './LoadingThrobber';
+
+// Lazy load heavy components
+const UserScoreBanner = React.lazy(() => import('./UserScoreBanner'));
+const AnimalListHeader = React.lazy(() => import('./AnimalListHeader').then(m => ({ default: m.AnimalListHeader })));
+const AnimalControls = React.lazy(() => import('./AnimalControls').then(m => ({ default: m.AnimalControls })));
+const AnimalListItem = React.lazy(() => import('./AnimalListItem').then(m => ({ default: m.AnimalListItem })));
+const AnimalListEmptyState = React.lazy(() => import('./AnimalListEmptyState').then(m => ({ default: m.AnimalListEmptyState })));
 
 interface AnimalListProps {
   animals: Animal[];
@@ -53,32 +57,42 @@ const AnimalList: React.FC<AnimalListProps> = ({ animals }) => {
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
-      <AnimalListHeader count={animals.length} />
+      <LazyBoundary message="Loading header..." size="sm">
+        <AnimalListHeader count={animals.length} />
+      </LazyBoundary>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <AnimalControls 
-          resultCount={processedList.length}
-          sortMode={sortMode}
-          setSortMode={setSortMode}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
+        <LazyBoundary message="Loading controls..." size="sm">
+          <AnimalControls 
+            resultCount={processedList.length}
+            sortMode={sortMode}
+            setSortMode={setSortMode}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </LazyBoundary>
 
         {/* User Score Context */}
         <div className="mt-6">
-           <UserScoreBanner variant="compact" />
+          <LazyBoundary message="Loading user score..." size="sm">
+            <UserScoreBanner variant="compact" />
+          </LazyBoundary>
         </div>
 
         {/* List Items */}
         <div className="space-y-3 mt-6">
+          <LazyBoundary message="Loading animals..." size="md">
             {processedList.map((animal) => (
-              <AnimalListItem key={animal.id} animal={animal} />
+              <Suspense key={animal.id} fallback={<LoadingThrobber size="sm" />}>
+                <AnimalListItem animal={animal} />
+              </Suspense>
             ))}
             
             {processedList.length === 0 && (
               <AnimalListEmptyState searchTerm={searchTerm} onClear={() => setSearchTerm('')} />
             )}
+          </LazyBoundary>
         </div>
       </div>
     </div>

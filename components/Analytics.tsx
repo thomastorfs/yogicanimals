@@ -1,8 +1,10 @@
-import React from 'react';
-import { useEffect } from 'react';
-import MetricCorrelations from './MetricCorrelations';
-import { AttributeExplorer } from './AttributeExplorer';
+import React, { useEffect, Suspense } from 'react';
+import { LazyBoundary } from './LazyBoundary';
 import { Animal } from '../types';
+
+// Lazy load analytics components
+const MetricCorrelations = React.lazy(() => import('./MetricCorrelations'));
+const AttributeExplorer = React.lazy(() => import('./AttributeExplorer').then(m => ({ default: m.AttributeExplorer })));
 
 interface AnalyticsProps {
   animals: Animal[];
@@ -26,10 +28,14 @@ const Analytics: React.FC<AnalyticsProps> = ({ animals }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-12">
         
         {/* Scatter Plot Card */}
-            <MetricCorrelations animals={animals} />
+        <LazyBoundary message="Loading correlations..." size="lg">
+          <MetricCorrelations animals={animals} />
+        </LazyBoundary>
 
         {/* Attribute Explorer Card */}
-            <AttributeExplorer animals={animals} />
+        <LazyBoundary message="Loading attribute explorer..." size="lg">
+          <AttributeExplorer animals={animals} />
+        </LazyBoundary>
 
       </div>
     </div>
