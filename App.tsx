@@ -29,22 +29,20 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
       <ScrollToTop />
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<HomePage animals={animals} />} />
-            <Route path="/animals" element={<AnimalList animals={animals} />} />
-            <Route path="/species/:slug" element={<AnimalDetail animals={animals} />} />
-            <Route path="/analytics" element={<Analytics animals={animals} />} />
-            <Route path="/calculate" element={<PersonalScoreCalculator />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+      <Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<HomePage animals={animals} />} />
+          <Route path="/animals" element={<AnimalList animals={animals} />} />
+          <Route path="/animals/:slug" element={<AnimalDetail animals={animals} />} />
+          <Route path="/analytics" element={<Analytics animals={animals} />} />
+          <Route path="/calculate" element={<PersonalScoreCalculator />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 };
 

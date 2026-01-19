@@ -14,7 +14,7 @@ export const AnimalListItem: React.FC<AnimalListItemProps> = ({ animal }) => {
 
   return (
     <Link
-      to={`/species/${animal.id}`}
+      to={`/animals/${animal.id}`}
       className="block bg-white hover:bg-emerald-50/30 border border-slate-200 hover:border-emerald-200 rounded-xl p-4 transition-all shadow-sm hover:shadow-md group"
     >
       <div className="flex items-center justify-between">

@@ -63,7 +63,7 @@ export const TopBottomLists: React.FC<TopBottomListsProps> = ({ animals }) => {
   }, [animals]);
 
   const handleSelectAnimal = (animal: Animal) => {
-    navigate(`/species/${animal.id}`);
+    navigate(`/animals/${animal.id}`);
   };
 
   return (

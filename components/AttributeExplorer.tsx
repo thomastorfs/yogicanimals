@@ -85,7 +85,7 @@ export const AttributeExplorer: React.FC<AttributeExplorerProps> = ({ animals })
           className="font-sans text-xs font-bold cursor-pointer hover:fill-emerald-600 transition-colors"
           onClick={() => {
             const animal = activeAttrData.find(d => d.name === payload.value)?.originalAnimal;
-            if (animal) navigate(`/species/${animal.id}`);
+            if (animal) navigate(`/animals/${animal.id}`);
           }}
         >
           {payload.value.length > 20 ? `${payload.value.substring(0, 20)}...` : payload.value}
@@ -185,7 +185,7 @@ export const AttributeExplorer: React.FC<AttributeExplorerProps> = ({ animals })
                           onClick={(data: any) => {
                             const animal = data?.originalAnimal || data?.payload?.originalAnimal;
                             if (animal) {
-                              navigate(`/species/${animal.id}`);
+                              navigate(`/animals/${animal.id}`);
                             }
                           }}
                        />

@@ -19,7 +19,7 @@ const SimilarAnimals: React.FC<SimilarAnimalsProps> = ({ similarSpecies }) => {
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
          {similarSpecies.map(sim => (
-            <Link to={`/species/${sim.id}`} key={sim.id} className="block bg-white hover:bg-emerald-50/30 rounded-2xl border border-slate-200 hover:border-emerald-300 p-6 transition-all shadow-sm hover:shadow-lg group">
+            <Link to={`/animals/${sim.id}`} key={sim.id} className="block bg-white hover:bg-emerald-50/30 rounded-2xl border border-slate-200 hover:border-emerald-300 p-6 transition-all shadow-sm hover:shadow-lg group">
                <div className="flex items-center justify-between mb-4">
                   <span className="text-4xl filter drop-shadow-sm group-hover:scale-110 transition-transform">{getAnimalEmoji(sim)}</span>
                   <YogicScore score={sim.total_score} size="md" />
