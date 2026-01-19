@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           output: {
             manualChunks(id) {
-              // Vendor chunks
+              // Vendor chunks (always separate)
               if (id.includes('node_modules')) {
                 if (id.includes('react')) {
                   return 'vendor-react';
@@ -38,12 +38,17 @@ export default defineConfig(({ mode }) => {
                 return 'vendor-other';
               }
 
-              // Shared components used across pages
-              if (id.includes('Navbar') || id.includes('Footer') || id.includes('ScrollToTop')) {
-                return 'shared';
+              // Shared utilities
+              if (id.includes('LoadingThrobber') || id.includes('LazyBoundary') || id.includes('Tooltip') || id.includes('FadeIn')) {
+                return 'shared-utils';
               }
 
-              // Lazy-loaded page components
+              // Shared components used across pages
+              if (id.includes('Navbar') || id.includes('Footer') || id.includes('ScrollToTop')) {
+                return 'shared-layout';
+              }
+
+              // Page-level chunks (lazy-loaded routes)
               if (id.includes('HomePage')) {
                 return 'page-home';
               }
@@ -60,28 +65,9 @@ export default defineConfig(({ mode }) => {
                 return 'page-calculator';
               }
 
-              // Lazy-loaded sub-components on home page
-              if (id.includes('TopBottomLists') || id.includes('Methodology') || id.includes('HomeIncentive')) {
-                return 'component-home-sections';
-              }
-
-              // Lazy-loaded visualization components
-              if (id.includes('AnimalRadarChart') || id.includes('AttributeExplorer') || id.includes('MetricCorrelations')) {
-                return 'component-charts';
-              }
-
-              // Split other utility components
+              // All other components go to a shared-components chunk to avoid circular deps
               if (id.includes('components/')) {
-                const match = id.match(/components\/([^/]+)\.tsx?/);
-                if (match) {
-                  const componentName = match[1];
-                  // Don't split tiny/core components
-                  if (['LoadingThrobber', 'LazyBoundary', 'Tooltip', 'FadeIn'].includes(componentName)) {
-                    return 'shared-utils';
-                  }
-                  // Group other components
-                  return 'components';
-                }
+                return 'components-shared';
               }
             },
             chunkFileNames: 'js/[name]-[hash].js',
