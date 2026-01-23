@@ -23,6 +23,30 @@ const PersonalScoreCalculator: React.FC = () => {
     document.title = "YogicAnimals | Calculator | Your Spiritual Score";
   }, []);
 
+  // Load existing score from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('userYogicScore');
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (typeof data.score === 'number' && typeof data.positive === 'number' && typeof data.negative === 'number') {
+            setResult({
+              total: data.score,
+              positive: data.positive,
+              negative: data.negative
+            });
+            setStep(ALL_ATTRIBUTES.length);
+          }
+        } catch (e) {
+          console.error('Failed to parse user score', e);
+        }
+      }
+    } catch (e) {
+      // LocalStorage access denied
+    }
+  }, []);
+
   // Scroll to top on step change
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,6 +80,8 @@ const PersonalScoreCalculator: React.FC = () => {
     try {
       const storageData = {
         score: scores.total_score,
+        positive: scores.positive_score,
+        negative: scores.negative_score,
         attributes: finalRatings,
         date: new Date().toISOString()
       };
